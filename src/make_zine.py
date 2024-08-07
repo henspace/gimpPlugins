@@ -52,7 +52,7 @@ def showUsage(summary):
   pdb.gimp_message(summary + "\n\n" + usageMsg)
   pdb.gimp_message_set_handler(messageHandler)
 
-def makezine(image, drawable, greyscale, dpi, useMM, pageWidth, pageHeight, panelMargin): 
+def makezine(image, drawable, greyscale, dpi, useMM, pageWidth, pageHeight, panelMargin, transparent): 
   """ Main entry point for the plugin.
 
   Creates a zine using information from the current working image.
@@ -66,6 +66,7 @@ def makezine(image, drawable, greyscale, dpi, useMM, pageWidth, pageHeight, pane
     pageWidth: width of the output page.
     pageHeight: height of the output page.
     panelMargin: margin. This applies to all panels.
+    transparent: boolean: true for transparent background, else white.
   """
   pdb.gimp_message_set_handler(1) # Messages to the console
   filename = pdb.gimp_image_get_filename(image)
@@ -109,7 +110,7 @@ def makezine(image, drawable, greyscale, dpi, useMM, pageWidth, pageHeight, pane
     imageType = 0 # RGB
     layerType = 1 # RGBA_IMAGE
   zineImage = pdb.gimp_image_new(pageWidthPx, pageHeightPx , imageType)
-  
+  pdb.gimp_image_set_resolution(zineImage, dpi, dpi)
   # set up panel dimensions. Note the terms width and height are relative to the
   # panel, not the page.
   panelHeightPx = 0.5 * pageHeightPx
@@ -130,9 +131,19 @@ def makezine(image, drawable, greyscale, dpi, useMM, pageWidth, pageHeight, pane
     (3, 1, False), 
     (3, 0, True)
   ]
+
+  stack = pdb.gimp_image_get_active_layer(zineImage)
+  if not transparent:
+    paper = pdb.gimp_layer_new(zineImage, pageWidthPx, pageHeightPx, layerType, "paper", 100, 0)
+    pdb.gimp_drawable_fill(paper, 2) # fill white
+    pdb.gimp_image_insert_layer(zineImage, paper, stack, 0)
+
   panelGroup = pdb.gimp_layer_group_new(zineImage)
   pdb.gimp_item_set_name(panelGroup, 'panels')
-  pdb.gimp_image_insert_layer(zineImage, panelGroup, pdb.gimp_image_get_active_layer(zineImage), 0)
+  
+  pdb.gimp_image_insert_layer(zineImage, panelGroup, stack, 0)
+  
+  
   for pageIndex in range(8):
     panelImageFilename = rootName + str(pageIndex) + ext
     pdb.gimp_message("Loading " + panelImageFilename)
@@ -179,6 +190,7 @@ register(
     (PF_FLOAT, "pageWidth", "Page width", 210),
     (PF_FLOAT, "pageHeight", "Page height", 297),
     (PF_FLOAT, "panelMargin", "Page margin", 5),
+    (PF_BOOL, "transparent", "Transparent paper layer", False)
   ],
   [],
   makezine
