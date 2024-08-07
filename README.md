@@ -14,7 +14,7 @@ the folding and cutting diagram below.
 
 ![Diagram showing how to create an 8 page zine from a single sheet of paper](images/single_sheet_zine_folding.jpg)
 
-To use the plugin, install it in your folder where your Gimp plugins are located.
+To use the plugin, download the [make_zine.py](src/make_zine.py) file and install it in the folder where your Gimp plugins are located.
 
 Once installed, using the plugin is straightforward.
 
