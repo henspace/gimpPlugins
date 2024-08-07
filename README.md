@@ -18,9 +18,9 @@ To use the plugin, install it in your folder where your Gimp plugins are located
 
 Once installed, using the plugin is straightforward.
 
-- Load your cover image. The file name should be of the form NAME0.ext, where NAME
-  is any alphanumeric name, and ext is any file type supported by Gimp. For example,
-  MyZine0.png.
+- Load your cover image. The file name should be of the form **NAME0.ext**, where **NAME**
+  is any alphanumeric name, and **ext** is any file type supported by Gimp. For example,
+  **MyZine0.png**.
 - From the **Image** menu select **Make zine...**.
 - Complete the **python_fu_makezine** settings.
 - The plugin will look for eight panel images in the same folder as the working
